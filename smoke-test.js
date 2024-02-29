@@ -6,8 +6,13 @@ export const options = {
     duration: '30s',
 };
 
+const json = __ENV.JSON;
+let url = "http://localhost:3000";
+if (json != "1") {
+    url = `${url}/plain`;
+}
 export default () => {
-    const response = http.get('http://localhost:3000');
+    const response = http.get(url);
     if (!check(response, {
         "Testing Response Code": (r) => r.status == 200
     })) {

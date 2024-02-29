@@ -10,8 +10,14 @@ export const options = {
     ],
 };
 
+const json = __ENV.JSON;
+let url = "http://localhost:3000";
+if (json != "1") {
+    url = `${url}/plain`;
+}
+
 export default () => {
-    const res = http.get('http://localhost:3000');
+    const res = http.get(url);
     if (
         !check(res, {
             'Checking for status code 200': (res) => res.status == 200,

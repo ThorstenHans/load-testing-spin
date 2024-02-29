@@ -1,5 +1,5 @@
 use serde::Serialize;
-use spin_sdk::http::{IntoResponse, Request, Response};
+use spin_sdk::http::{IntoResponse, Params, Request, Response, Router};
 use spin_sdk::http_component;
 
 #[derive(Debug, Serialize)]
@@ -21,11 +21,26 @@ impl Default for Sample {
 
 /// A simple Spin HTTP component.
 #[http_component]
-fn handle_scenario(_: Request) -> anyhow::Result<impl IntoResponse> {
+fn handle_scenario(req: Request) -> anyhow::Result<impl IntoResponse> {
+    let mut router = Router::default();
+    router.get("/", return_json);
+    router.get("/plain", return_text);
+    Ok(router.handle(req))
+}
+
+fn return_json(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     let payload = serde_json::to_vec(&Sample::default())?;
     Ok(Response::builder()
         .status(200)
         .header("content-type", "application/json")
         .body(payload)
+        .build())
+}
+
+fn return_text(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
+    Ok(Response::builder()
+        .status(200)
+        .header("content-type", "plain/text")
+        .body("Some static text value")
         .build())
 }

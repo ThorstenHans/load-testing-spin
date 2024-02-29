@@ -3,15 +3,23 @@ import { sleep } from 'k6';
 import { check, fail } from 'k6';
 
 
+
 export const options = {
     executor: 'ramping-arrival-rate',
     stages: [
-        { duration: '1m', target: 300 },
+        { duration: '1m', target: 3000 },
     ],
 };
 
+const json = __ENV.JSON;
+let url = "http://localhost:3000";
+if (json != "1") {
+    url = `${url}/plain`;
+}
 export default () => {
-    const res = http.get('http://localhost:3000/');
+
+    console.log(`Requesting ${url}`);
+    const res = http.get(url);
     if (
         !check(res, {
             'Checking for status code 200': (res) => res.status == 200,

@@ -40,7 +40,7 @@ fn return_json(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
 fn return_text(_: Request, _: Params) -> anyhow::Result<impl IntoResponse> {
     Ok(Response::builder()
         .status(200)
-        .header("content-type", "plain/text")
+        .header("content-type", "text/plain")
         .body("Some static text value")
         .build())
 }
